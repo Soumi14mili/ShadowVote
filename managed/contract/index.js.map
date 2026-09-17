@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "file": "index.js",
+  "sourceRoot": "../../",
+  "sources": ["contracts/shadow_vote.compact"],
+  "names": [],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAAA;;;;;;;;;;;;;MA6CA,AAAA,UAEC;;;;;;;;;;;;;;;;;;;;;;OAAA;MAWD,AAAA,SAYC;;;;;;;;;;;;;;;;;;;;;;OAAA;MAKD,AAAA,cAGC;;;;;;;;;;;;;;;;;;;;;;OAAA;;;;;;;;;;;;GACA;EA/ED;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IA6BA;;;;;;;;;yEAAqC;IACrC;;;;;;;;;yEAAqC;IACrC;;;;;;;;;yEAAqC;IACrC;;;;;;;;;yEAAoC;;;;;;;GA+CnC;EAxCD,AAAA,cAA+B;;0DAA/B,WAA+B;;;;;;;;;;;;;;GAAA;EAM/B,AAAA,aAEC;IADC;;;;;;;;;yEAAO;;GACR;EAWD,AAAA,YAYC;oDAXQ;;;;;;;;;;;yHAAO;;UAER,QAAyC;UAE/C,KAAY;;;;;6CAAI;;;;;;;;;;;kHAAY;;;IAA5B;;;;;;;2HAAA,KAAY;;yEAAA;QAER,QAAM;YACR,KAAS;;;;;+CAAI;;;;;;;;;;;oHAAS;;;MAAtB;;;;;;;6HAAA,KAAS;;2EAAA;;YAET,KAAQ;;;;;+CAAI;;;;;;;;;;;oHAAQ;;;MAApB;;;;;;;6HAAA,KAAQ;;2EAAA;;;GAEX;EAKD,AAAA,iBAGC;oDAFQ;;;;;;;;;;;yHAAO;;IACd;;;;;;;;;yEAAO;;GACR;;;;;;;;;;;;;;;;IAjDD;qCAAA;;;;;;;;;;;0GAAqC;KAAA;IACrC;qCAAA;;;;;;;;;;;0GAAqC;KAAA;IACrC;qCAAA;;;;;;;;;;;0GAAqC;KAAA;IACrC;qCAAA;;;;;;;;;;;0GAAoC;KAAA;;;;;;;;;;"
+}
