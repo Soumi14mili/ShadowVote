@@ -45,6 +45,7 @@ export interface ProvenTransaction {
   status: 'confirmed' | 'pending' | 'failed';
   totalVotersAfter: number;
   gasCost: string;
+  proposalId?: string;
 }
 
 export interface ObservablePrivacySnapshot {
@@ -56,6 +57,45 @@ export interface ObservablePrivacySnapshot {
   individualChoiceLeaked: boolean;
   zkProofValid: boolean;
   txHash: string;
+}
+
+export interface GovernanceProposal {
+  id: string;
+  mipNumber: string;
+  title: string;
+  summary: string;
+  fullDescription: string;
+  category: 'Core Protocol' | 'Treasury' | 'Security' | 'Ecosystem';
+  status: 'active' | 'passed' | 'closed';
+  yesVotes: number;
+  noVotes: number;
+  totalVotes: number;
+  quorumTarget: number;
+  endsIn: string;
+  author: string;
+  contractAddress: string;
+}
+
+export interface CryptographicReceipt {
+  receiptId: string;
+  proposalId: string;
+  proposalTitle: string;
+  txHash: string;
+  blockHeight: number;
+  timestamp: number;
+  nullifierHash: string;
+  zkProofSnippet: string;
+  verifierKeyFingerprint: string;
+  circuitConstraints: number;
+  privacyGuarantee: string;
+}
+
+export interface ProverLog {
+  id: string;
+  timestamp: string;
+  stage: 'WITNESS' | 'CONSTRAINT' | 'PROVER' | 'SIGN' | 'PREPROD';
+  message: string;
+  type: 'info' | 'zk' | 'success' | 'warn';
 }
 
 // Global window declaration for Midnight Lace wallet DApp connector
