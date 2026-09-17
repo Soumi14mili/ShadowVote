@@ -1,0 +1,13 @@
+{
+  "network": "preprod",
+  "contractAddress": "72eaeadba57dc76079ae2b8329e59243ed27b6d49dafec6f20eb97f4262d73f9",
+  "deployedAt": "2026-09-17T07:42:22.000Z",
+  "compilerVersion": "0.31.1",
+  "languageVersion": "0.23.0",
+  "runtimeVersion": "0.16.0",
+  "circuits": [
+    "initialize",
+    "cast_vote",
+    "close_election"
+  ]
+}

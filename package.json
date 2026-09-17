@@ -7,15 +7,20 @@
     "node": ">=22"
   },
   "scripts": {
-    "compile": "compactc contracts/shadow_vote.compact managed",
+    "compile": "compact compile contracts/shadow_vote.compact managed",
     "test": "node --experimental-vm-modules node_modules/.bin/jest --forceExit",
     "test:coverage": "node --experimental-vm-modules node_modules/.bin/jest --coverage --forceExit",
-    "deploy:preview": "mn-deploy --network preview",
-    "deploy:preprod": "mn-deploy --network preprod",
+    "deploy:preview": "NETWORK=preview node --loader ts-node/esm src/deploy.ts",
+    "deploy:preprod": "NETWORK=preprod node --loader ts-node/esm src/deploy.ts",
     "clean": "rm -rf managed/"
   },
   "dependencies": {
-    "@midnight-ntwrk/compact-runtime": "^0.16.0"
+    "@midnight-ntwrk/compact-runtime": "^0.16.0",
+    "@midnight-ntwrk/midnight-js-contracts": "^4.1.1",
+    "@midnight-ntwrk/midnight-js-http-client-proof-provider": "^4.1.1",
+    "@midnight-ntwrk/midnight-js-indexer-public-data-provider": "^4.1.1",
+    "@midnight-ntwrk/midnight-js-level-private-state-provider": "^4.1.1",
+    "@midnight-ntwrk/midnight-js-node-zk-config-provider": "^4.1.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
