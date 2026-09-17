@@ -1,0 +1,35 @@
+# Node
+node_modules/
+dist/
+.npm/
+
+# Midnight secrets — NEVER commit wallet seeds
+.midnight-state.json
+*.seed
+*.mnemonic
+
+# Build artifacts (do NOT ignore managed/ — it must be committed for the submission)
+# managed/  <-- intentionally NOT ignored
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Environment files
+.env
+.env.local
+.env.production

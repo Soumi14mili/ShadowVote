@@ -1,0 +1,39 @@
+version: "3.9"
+
+# Local Midnight devnet — run `docker compose up -d` before testing locally
+# This spins up:
+#   - midnight-node    : the local blockchain node
+#   - midnight-indexer : GraphQL indexer for contract state queries
+#   - proof-server     : local ZK proof generation server
+
+services:
+  midnight-node:
+    image: ghcr.io/midnight-ntwrk/midnight-node:latest
+    container_name: mn_node
+    ports:
+      - "9944:9944"   # RPC
+      - "9933:9933"   # HTTP RPC
+    volumes:
+      - mn_data:/data
+    command: ["--dev", "--rpc-external", "--ws-external"]
+
+  midnight-indexer:
+    image: ghcr.io/midnight-ntwrk/midnight-indexer:latest
+    container_name: mn_indexer
+    ports:
+      - "8088:8088"   # GraphQL endpoint
+    environment:
+      - NODE_URL=ws://midnight-node:9944
+    depends_on:
+      - midnight-node
+
+  proof-server:
+    image: ghcr.io/midnight-ntwrk/proof-server:latest
+    container_name: mn_proof_server
+    ports:
+      - "6300:6300"   # Proof server endpoint
+    volumes:
+      - ./managed:/app/managed:ro  # mount compiled circuits
+
+volumes:
+  mn_data:
