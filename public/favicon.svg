@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="8" fill="#0B0F19"/>
+  <!-- Crescent Moon Symbol -->
+  <path d="M19.5 7C14.8056 7 11 10.8056 11 15.5C11 20.1944 14.8056 24 19.5 24C20.6133 24 21.6775 23.7865 22.6517 23.3986C20.4851 25.0441 17.7661 26 14.8 26C8.83532 26 4 21.1647 4 15.2C4 9.23532 8.83532 4.4 14.8 4.4C16.8967 4.4 18.8471 4.99617 20.5 6.03185C19.8458 6.67138 19.5 7.79469 19.5 7Z" fill="url(#crescent-glow)" />
+  <!-- Accent Sparkle -->
+  <circle cx="23.5" cy="11.5" r="1.5" fill="#06B6D4" />
+  <circle cx="26" cy="18" r="1" fill="#F59E0B" />
+  <defs>
+    <linearGradient id="crescent-glow" x1="4" y1="4.4" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#06B6D4"/>
+      <stop offset="0.5" stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+</svg>
