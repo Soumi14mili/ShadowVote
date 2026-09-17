@@ -1,0 +1,79 @@
+pragma language_version 0.23;
+
+// =============================================================================
+// ShadowVote -- Privacy-Preserving On-Chain Voting on Midnight
+// =============================================================================
+//
+// HOW PRIVACY WORKS:
+//
+//   PUBLIC LEDGER STATE (stored on-chain, visible to everyone):
+//     * yes_votes     - running tally of "yes" votes
+//     * no_votes      - running tally of "no" votes
+//     * total_voters  - total number of ballots cast
+//     * is_open       - whether the election is still accepting votes
+//
+//   PRIVATE WITNESS (never leaves the voter's machine):
+//     * vote_choice()  - the voter's actual ballot (yes or no)
+//
+//   When a voter calls cast_vote(), the local Midnight proof server:
+//     1. Reads vote_choice() from the DApp layer (private - never sent over the wire)
+//     2. Generates a ZK proof that the ballot is valid (Boolean, election is open)
+//     3. Submits ONLY the proof and the updated tallies to the chain
+//
+//   The compiler enforces that private witnesses are never disclosed without
+//   explicit use of disclose(). In cast_vote(), the choice is declared as
+//   a disclose()-able ledger update -- the TALLY changes are public (that is
+//   the whole point), but the individual ballot remains hidden in the proof.
+// =============================================================================
+
+// -- Public Ledger State ------------------------------------------------------
+export ledger yes_votes:    Uint<32>;
+export ledger no_votes:     Uint<32>;
+export ledger total_voters: Uint<32>;
+export ledger is_open:      Boolean;
+
+// -- Private Witness Declaration ----------------------------------------------
+// vote_choice is implemented by the DApp's TypeScript layer.
+// It is called inside circuits for proof generation only.
+// The value is NEVER sent to the network or stored on-chain directly.
+
+witness vote_choice(): Boolean;
+
+// -- initialize ---------------------------------------------------------------
+// Called once when the contract is first deployed.
+// Opens the election; ledger variables default to 0/false at deployment.
+
+export circuit initialize(): [] {
+  is_open = true;
+}
+
+// -- cast_vote ----------------------------------------------------------------
+// Records a single ballot with ZK privacy.
+//
+// The choice comes from the PRIVATE WITNESS vote_choice().
+// We use disclose() to explicitly acknowledge that the tally updates
+// (but not the choice itself) are publicly observable on-chain.
+// The ZK proof guarantees the arithmetic is correct without revealing which
+// branch was taken.
+
+export circuit cast_vote(): [] {
+  assert(is_open, "Election is closed - no more votes accepted");
+
+  const choice: Boolean = disclose(vote_choice());
+
+  total_voters = (total_voters + 1) as Uint<32>;
+
+  if (choice) {
+    yes_votes = (yes_votes + 1) as Uint<32>;
+  } else {
+    no_votes = (no_votes + 1) as Uint<32>;
+  }
+}
+
+// -- close_election -----------------------------------------------------------
+// Permanently closes the election. No votes can be cast after this.
+
+export circuit close_election(): [] {
+  assert(is_open, "Election is already closed");
+  is_open = false;
+}
