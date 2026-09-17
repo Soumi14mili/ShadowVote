@@ -13,12 +13,12 @@
 
 | Item | Resource / Value |
 |---|---|
-| **Public GitHub Repo** | [https://github.com/Soumi14mili/ShadowVote-UI](https://github.com/Soumi14mili/ShadowVote-UI) *(or [Soumi14mili/ShadowVote](https://github.com/Soumi14mili/ShadowVote))* |
-| **Live Demo Link** | [https://shadow-vote-preprod.vercel.app](https://shadow-vote-preprod.vercel.app) *(Deployable on Vercel / Netlify via included configs)* |
+| **Public GitHub Repo** | [https://github.com/Soumi14mili/ShadowVote](https://github.com/Soumi14mili/ShadowVote) |
+| **Live Demo Link** | [https://shadow-vote-kappa.vercel.app/](https://shadow-vote-kappa.vercel.app/) |
 | **Deployed Preprod Address** | `72eaeadba57dc76079ae2b8329e59243ed27b6d49dafec6f20eb97f4262d73f9` |
 | **Demo Video** | [`demo-video.webm`](./demo-video.webm) — End-to-end wallet connect + successful ZK circuit call + disconnect |
 | **Test Suite** | 6 passed, 100% circuit & wallet tests passing (`npm test`) |
-| **Commit History** | 8+ structured, meaningful commits |
+| **Commit History** | 10 structured, meaningful commits |
 
 ---
 
