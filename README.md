@@ -160,18 +160,32 @@ The video demonstration [`demo-video.webm`](./demo-video.webm) (2.4 MB) was reco
 
 ---
 
-## 📸 Application Screenshots
+---
+
+## 🎨 3D Holographic Visual Assets & UI Architecture
+
+ShadowVote incorporates custom 3D cyberpunk and lunar cryptographic visuals:
+
+| Asset | Description | Preview |
+|---|---|---|
+| **Lunar Circuit Architecture** | Obsidian crescent moon overlaid with neon cyan and amber ZK circuit pathways | `public/assets/hero_lunar_circuit.jpg` |
+| **ZK-SNARK Shield Seal** | Holographic geometric shield emblem representing cryptographic verification | `public/assets/zk_shield_seal.jpg` |
+| **Governance Pioneer Medal** | 3D luxury gold & obsidian soulbound credential for verifiable voters | `public/assets/governance_voter_badge.jpg` |
+
+---
+
+## 📸 Production Application Screenshots
 
 | Feature | Screenshot |
 |---|---|
-| **1. Landing & Deployed Address** | ![Landing](./screenshots/01_landing_unconnected.png) |
-| **2. Lace Wallet Connected** | ![Connected](./screenshots/02_wallet_connected_preprod.png) |
-| **3. Ballot Selection** | ![Ballot](./screenshots/03_ballot_choice_selected.png) |
-| **4. Circuit Proving** | ![Proving](./screenshots/04_circuit_execution_proving.png) |
-| **5. Confirmation & Ledger Update** | ![Confirmed](./screenshots/05_circuit_confirmed_tally_updated.png) |
-| **6. Observable Privacy Inspector** | ![Privacy](./screenshots/06_privacy_inspector_proven_not_shown.png) |
-| **7. On-Chain Transactions** | ![Transactions](./screenshots/07_on_chain_transactions.png) |
-| **8. Lace Disconnect** | ![Disconnect](./screenshots/08_wallet_disconnected.png) |
+| **1. 3D Hero & Preprod Node Telemetry** | ![Hero & Telemetry](./screenshots/01_landing_hero_telemetry.png) |
+| **2. Interactive Merkle Tree Allowlist** | ![Merkle Allowlist](./screenshots/02_merkle_allowlist_witness.png) |
+| **3. Anti-Whale Quadratic Voting Simulator** | ![Quadratic Voting](./screenshots/03_quadratic_voting_simulator.png) |
+| **4. Zero-Knowledge Circuit Prover Console** | ![Prover Console](./screenshots/04_circuit_prover_console.png) |
+| **5. Proof Verifier & Soulbound Voter Medal** | ![Proof Verifier](./screenshots/05_proof_verifier_badge.png) |
+| **6. Privacy Audit & Adversary Simulator** | ![Adversary Simulator](./screenshots/06_privacy_adversary_simulator.png) |
+| **7. On-Chain Transaction Explorer** | ![Transactions](./screenshots/07_on_chain_transactions.png) |
+| **8. Midnight Lace Wallet Integration** | ![Wallet](./screenshots/02_wallet_connected_preprod.png) |
 
 ---
 

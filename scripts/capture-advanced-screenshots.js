@@ -15,65 +15,78 @@ async function sleep(ms) {
 async function captureNewScreenshots() {
   console.log('🚀 Starting advanced UI screenshot capture...');
 
-  const server = spawn('npx', ['vite', 'preview', '--port', '4174', '--host'], {
+  const server = spawn('npx', ['vite', 'preview', '--port', '4178', '--host'], {
     cwd: ROOT_DIR,
     shell: true,
   });
 
-  await sleep(2500);
+  await sleep(3000);
 
   const browser = await chromium.launch({
     executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
     headless: true,
   });
 
-  const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
+  const page = await browser.newPage({ viewport: { width: 1440, height: 960 } });
 
   try {
-    console.log('Navigating to http://localhost:4174...');
-    await page.goto('http://localhost:4174', { waitUntil: 'networkidle' });
-    await sleep(1500);
+    console.log('Navigating to http://localhost:4178...');
+    await page.goto('http://localhost:4178', { waitUntil: 'networkidle' });
+    await sleep(2000);
 
-    // 1. Governance Proposals & Voting
-    console.log('Capturing 01_landing_proposals.png...');
-    await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '01_landing_proposals.png') });
+    // 1. Hero & Governance Proposals & Telemetry
+    console.log('Capturing 01_landing_hero_telemetry.png...');
+    await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '01_landing_hero_telemetry.png'), fullPage: false });
 
     // Connect wallet
-    const connectBtn = page.locator('button:has-text("Connect Lace Wallet")');
+    const connectBtn = page.getByRole('button', { name: /Connect Lace Wallet/i });
     if (await connectBtn.isVisible()) {
       await connectBtn.click();
-      await sleep(1500);
+      await sleep(1000);
     }
 
-    // 2. Prover Console tab
-    console.log('Capturing 02_circuit_prover_console.png...');
-    await page.locator('button:has-text("ZK Prover Console")').click();
+    // 2. Merkle Allowlist tab
+    console.log('Capturing 02_merkle_allowlist_witness.png...');
+    await page.getByRole('button', { name: /Merkle Allowlist/i }).first().click();
     await sleep(1200);
-    await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '02_circuit_prover_console.png') });
+    await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '02_merkle_allowlist_witness.png'), fullPage: false });
 
-    // 3. Proof Verifier tab
-    console.log('Capturing 03_proof_verifier_receipt.png...');
-    await page.locator('button:has-text("Proof Verifier & Receipt")').click();
+    // 3. Quadratic Voting tab
+    console.log('Capturing 03_quadratic_voting_simulator.png...');
+    await page.getByRole('button', { name: /Quadratic Voting/i }).click();
     await sleep(1200);
-    await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '03_proof_verifier_receipt.png') });
+    await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '03_quadratic_voting_simulator.png'), fullPage: false });
 
-    // 4. Privacy Audit & Attack Sim
-    console.log('Capturing 04_privacy_adversary_simulator.png...');
-    await page.locator('button:has-text("Privacy Audit & Attack Sim")').click();
-    await sleep(1000);
-    await page.locator('button:has-text("Attack Simulator")').click();
-    await sleep(1000);
-    await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '04_privacy_adversary_simulator.png') });
+    // 4. Prover Console tab
+    console.log('Capturing 04_circuit_prover_console.png...');
+    await page.getByRole('button', { name: /ZK Prover Console/i }).click();
+    await sleep(1200);
+    await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '04_circuit_prover_console.png'), fullPage: false });
 
-    console.log('✅ Advanced UI screenshots successfully captured!');
+    // 5. Proof Verifier & Badge tab
+    console.log('Capturing 05_proof_verifier_badge.png...');
+    await page.getByRole('button', { name: /Proof Verifier & Badge/i }).click();
+    await sleep(1200);
+    await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '05_proof_verifier_badge.png'), fullPage: false });
+
+    // 6. Privacy Audit & Attack Sim
+    console.log('Capturing 06_privacy_adversary_simulator.png...');
+    await page.getByRole('button', { name: /Privacy Audit & Attack Sim/i }).click();
+    await sleep(1000);
+    const attackSimBtn = page.getByRole('button', { name: /Attack Simulator/i });
+    if (await attackSimBtn.isVisible()) {
+      await attackSimBtn.click();
+      await sleep(1000);
+    }
+    await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '06_privacy_adversary_simulator.png'), fullPage: false });
+
+    console.log('✅ All advanced UI screenshots successfully captured!');
+  } catch (err) {
+    console.error('Error during capture:', err);
   } finally {
     await browser.close();
     server.kill();
-    process.exit(0);
   }
 }
 
-captureNewScreenshots().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+captureNewScreenshots();

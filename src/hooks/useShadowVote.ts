@@ -370,11 +370,43 @@ export function useShadowVote() {
     }, 3000);
   }, [ledgerState.total_voters, selectedProposalId, transactions.length]);
 
+  /**
+   * Add a new proposal
+   */
+  const addProposal = useCallback((newProposalData: {
+    title: string;
+    category: string;
+    description: string;
+    quorumThreshold: number;
+  }) => {
+    const newId = `mip-0${proposals.length + 1}`;
+    const newMip: GovernanceProposal = {
+      id: newId,
+      mipNumber: `MIP-0${proposals.length + 1}`,
+      title: newProposalData.title,
+      summary: newProposalData.description.slice(0, 120) + '...',
+      fullDescription: newProposalData.description,
+      category: newProposalData.category as any,
+      status: 'active',
+      yesVotes: 0,
+      noVotes: 0,
+      totalVotes: 0,
+      quorumTarget: newProposalData.quorumThreshold,
+      endsIn: '7 days',
+      author: 'Community Proposer',
+      contractAddress: PREPROD_CONTRACT_ADDRESS,
+    };
+
+    setProposals((prev) => [newMip, ...prev]);
+    setSelectedProposalId(newId);
+  }, [proposals.length]);
+
   return {
     proposals,
     selectedProposalId,
     activeProposal,
     selectProposal,
+    addProposal,
     ledgerState,
     circuitStep,
     activeCircuit,

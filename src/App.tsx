@@ -10,9 +10,28 @@ import { PrivacyInspector } from './components/PrivacyInspector';
 import { TransactionHistory } from './components/TransactionHistory';
 import { AdminControls } from './components/AdminControls';
 import { CosmicBackground } from './components/CosmicBackground';
+import { HeroSection } from './components/HeroSection';
+import { NetworkRadar } from './components/NetworkRadar';
+import { MerkleTreeVisualizer } from './components/MerkleTreeVisualizer';
+import { QuadraticVotingSim } from './components/QuadraticVotingSim';
+import { CreateProposalModal } from './components/CreateProposalModal';
+import { ZKProverTheater } from './components/ZKProverTheater';
 import { useLaceWallet } from './hooks/useLaceWallet';
 import { useShadowVote } from './hooks/useShadowVote';
-import { Moon, Shield, Sparkles, BookOpen, Github, Cpu, FileCheck, Terminal, History, Settings, ExternalLink } from 'lucide-react';
+import {
+  Moon,
+  Shield,
+  Sparkles,
+  BookOpen,
+  Github,
+  Cpu,
+  FileCheck,
+  History,
+  Settings,
+  ExternalLink,
+  Layers,
+  Scale,
+} from 'lucide-react';
 import { soundFx } from './utils/audio';
 
 export const App: React.FC = () => {
@@ -22,6 +41,7 @@ export const App: React.FC = () => {
     selectedProposalId,
     activeProposal,
     selectProposal,
+    addProposal,
     ledgerState,
     circuitStep,
     activeCircuit,
@@ -34,7 +54,12 @@ export const App: React.FC = () => {
     closeElection,
   } = useShadowVote();
 
-  const [activeTab, setActiveTab] = useState<'governance' | 'prover' | 'receipt' | 'privacy' | 'transactions' | 'admin'>('governance');
+  const [activeTab, setActiveTab] = useState<
+    'governance' | 'merkle' | 'quadratic' | 'prover' | 'receipt' | 'privacy' | 'transactions' | 'admin'
+  >('governance');
+
+  const [isCreateProposalOpen, setIsCreateProposalOpen] = useState(false);
+  const [proverTheaterDismissed, setProverTheaterDismissed] = useState(false);
 
   const handleTabClick = (tab: typeof activeTab) => {
     soundFx.playClick();
@@ -43,15 +68,33 @@ export const App: React.FC = () => {
 
   const handleClaimFaucet = () => {
     if (wallet.address) {
-      // Simulate adding 500 tDUST
       wallet.balance = `${(parseFloat(wallet.balance.replace(/[^0-9.]/g, '')) + 500).toLocaleString('en-US', { minimumFractionDigits: 2 })} tDUST`;
     }
+  };
+
+  const handleVoteSubmit = async (choice: boolean) => {
+    setProverTheaterDismissed(false);
+    return await castVote(choice);
   };
 
   return (
     <div className="min-h-screen bg-midnight-950 text-slate-100 flex flex-col relative overflow-x-hidden selection:bg-cyan-500/30 selection:text-cyan-200">
       {/* Interactive Cosmic Background Canvas */}
       <CosmicBackground />
+
+      {/* Full-Screen Holographic ZK Prover Theater Modal */}
+      <ZKProverTheater
+        isOpen={circuitStep !== 'idle' && !proverTheaterDismissed}
+        circuitStep={circuitStep}
+        onClose={() => setProverTheaterDismissed(true)}
+      />
+
+      {/* Modal for drafting a new MIP proposal */}
+      <CreateProposalModal
+        isOpen={isCreateProposalOpen}
+        onClose={() => setIsCreateProposalOpen(false)}
+        onSubmit={(newProp) => addProposal(newProp)}
+      />
 
       {/* Header */}
       <Header
@@ -63,20 +106,17 @@ export const App: React.FC = () => {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10 space-y-6">
-        {/* Poetic Intro & Midnight Branding */}
-        <div className="text-center max-w-3xl mx-auto space-y-2 mb-6">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-midnight-900/90 border border-cyan-500/30 text-xs text-cyan-300 font-mono shadow-crescent">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Midnight Challenge Level 3 · First Quarter</span>
-          </div>
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-100 via-cyan-100 to-amber-200">
-            The Shielded Governance Frontier
-          </h1>
-          <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
-            "Half light, half shadow — exactly half the moon is lit, and exactly as much of your governance participation is disclosed as you decide."
-          </p>
-        </div>
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10 space-y-6">
+        {/* Cinematic 3D Lunar Circuit Hero Section */}
+        <HeroSection
+          onOpenVoting={() => handleTabClick('governance')}
+          onOpenMerkle={() => handleTabClick('merkle')}
+          onOpenAudit={() => handleTabClick('privacy')}
+          onOpenCreateProposal={() => setIsCreateProposalOpen(true)}
+        />
+
+        {/* Real-time Preprod Network Telemetry Radar */}
+        <NetworkRadar />
 
         {/* Verifiable Preprod Contract Address Banner */}
         <ContractBanner />
@@ -96,6 +136,30 @@ export const App: React.FC = () => {
           >
             <Moon className="w-4 h-4 text-cyan-400" />
             <span>Governance Proposals</span>
+          </button>
+
+          <button
+            onClick={() => handleTabClick('merkle')}
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center space-x-2 ${
+              activeTab === 'merkle'
+                ? 'bg-gradient-to-r from-purple-500/20 to-indigo-500/20 text-purple-300 border border-purple-500/50 shadow-crescent'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-900'
+            }`}
+          >
+            <Layers className="w-4 h-4 text-purple-400" />
+            <span>Merkle Allowlist</span>
+          </button>
+
+          <button
+            onClick={() => handleTabClick('quadratic')}
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center space-x-2 ${
+              activeTab === 'quadratic'
+                ? 'bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border border-amber-500/50 shadow-crescent'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-900'
+            }`}
+          >
+            <Scale className="w-4 h-4 text-amber-400" />
+            <span>Quadratic Voting</span>
           </button>
 
           <button
@@ -122,7 +186,7 @@ export const App: React.FC = () => {
             }`}
           >
             <FileCheck className="w-4 h-4 text-emerald-400" />
-            <span>Proof Verifier & Receipt</span>
+            <span>Proof Verifier & Badge</span>
           </button>
 
           <button
@@ -165,6 +229,21 @@ export const App: React.FC = () => {
         {/* TAB 1: GOVERNANCE & VOTING */}
         {activeTab === 'governance' && (
           <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-mono text-slate-400">
+                Select an active proposal to inspect cryptographic parameters and cast your confidential ballot.
+              </span>
+              <button
+                onClick={() => {
+                  soundFx.playClick();
+                  setIsCreateProposalOpen(true);
+                }}
+                className="px-3.5 py-1.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-300 font-mono text-xs transition-all flex items-center space-x-1.5"
+              >
+                <span>+ Create Proposal</span>
+              </button>
+            </div>
+
             <ProposalSelector
               proposals={proposals}
               selectedProposalId={selectedProposalId}
@@ -176,7 +255,7 @@ export const App: React.FC = () => {
               activeProposal={activeProposal}
               circuitStep={circuitStep}
               activeCircuit={activeCircuit}
-              onCastVote={castVote}
+              onCastVote={handleVoteSubmit}
               onConnectWallet={() => connect('lace')}
               onViewReceipt={() => handleTabClick('receipt')}
             />
@@ -190,7 +269,21 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* TAB 2: ZK PROVER CONSOLE */}
+        {/* TAB 2: MERKLE ALLOWLIST VISUALIZER */}
+        {activeTab === 'merkle' && (
+          <div className="space-y-6">
+            <MerkleTreeVisualizer />
+          </div>
+        )}
+
+        {/* TAB 3: ANTI-WHALE QUADRATIC VOTING SIMULATOR */}
+        {activeTab === 'quadratic' && (
+          <div className="space-y-6">
+            <QuadraticVotingSim />
+          </div>
+        )}
+
+        {/* TAB 4: ZK PROVER CONSOLE */}
         {activeTab === 'prover' && (
           <div className="space-y-6">
             <CircuitVisualizer
@@ -201,28 +294,28 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* TAB 3: PROOF VERIFIER & RECEIPT */}
+        {/* TAB 5: PROOF VERIFIER, RECEIPT & 3D MEDAL */}
         {activeTab === 'receipt' && (
           <div className="space-y-6">
             <ProofVerifier recentReceipt={recentReceipt} />
           </div>
         )}
 
-        {/* TAB 4: PRIVACY INSPECTOR & ADVERSARY SIMULATOR */}
+        {/* TAB 6: PRIVACY INSPECTOR & ADVERSARY SIMULATOR */}
         {activeTab === 'privacy' && (
           <div className="space-y-6">
             <PrivacyInspector snapshot={privacySnapshot} />
           </div>
         )}
 
-        {/* TAB 5: ON-CHAIN TRANSACTIONS */}
+        {/* TAB 7: ON-CHAIN TRANSACTIONS */}
         {activeTab === 'transactions' && (
           <div className="space-y-6">
             <TransactionHistory transactions={transactions} />
           </div>
         )}
 
-        {/* TAB 6: ADMIN LIFECYCLE */}
+        {/* TAB 8: ADMIN LIFECYCLE */}
         {activeTab === 'admin' && (
           <div className="space-y-6">
             <AdminControls

@@ -150,6 +150,45 @@ export const ProofVerifier: React.FC<ProofVerifierProps> = ({ recentReceipt }) =
         </div>
       </div>
 
+      {/* Soulbound 3D Governance Voter Badge Card */}
+      <div className="p-5 rounded-2xl bg-midnight-950/90 border border-amber-500/30 flex flex-col sm:flex-row items-center gap-6 relative overflow-hidden">
+        <div className="absolute -top-12 -left-12 w-36 h-36 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+        
+        {/* 3D Medal Image */}
+        <div className="relative w-28 h-28 sm:w-32 sm:h-32 flex-shrink-0 rounded-2xl overflow-hidden border border-amber-400/40 p-1 bg-gradient-to-tr from-amber-600 via-purple-600 to-cyan-500 shadow-[0_0_30px_rgba(245,158,11,0.25)]">
+          <img
+            src="/assets/governance_voter_badge.jpg"
+            alt="Midnight Governance Pioneer Badge"
+            className="w-full h-full object-cover rounded-xl"
+          />
+        </div>
+
+        {/* Badge details */}
+        <div className="flex-1 space-y-2 text-center sm:text-left">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+            <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-800/60 font-bold">
+              Level 3 First Quarter Soulbound Medal
+            </span>
+            <span className="text-[11px] font-mono text-cyan-300">Preprod Mint #042</span>
+          </div>
+
+          <h4 className="text-base sm:text-lg font-extrabold text-slate-100">
+            Midnight Governance Pioneer Credential
+          </h4>
+          <p className="text-xs text-slate-400 leading-relaxed font-sans">
+            Cryptographically signed proof of governance participation. Proves that your sovereign address cast a confidential ballot without linking your public identity to your vote option.
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 pt-1 text-[11px] font-mono text-slate-400">
+            <span>Circuit: <strong className="text-slate-200">cast_vote.verifier</strong></span>
+            <span>·</span>
+            <span>Curve: <strong className="text-purple-300">BLS12-381</strong></span>
+            <span>·</span>
+            <span>Status: <strong className="text-emerald-400">Minted & Verified</strong></span>
+          </div>
+        </div>
+      </div>
+
       {/* Interactive Verification Playground */}
       <div className="p-5 rounded-xl bg-midnight-950 border border-midnight-800 space-y-4">
         <div className="flex items-center justify-between">
