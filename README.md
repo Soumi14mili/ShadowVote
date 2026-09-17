@@ -1,61 +1,65 @@
-# 🌑 ShadowVote — Crescent (Midnight Level 2)
+# 🌑 ShadowVote — Production-Grade Privacy-Preserving Voting on Midnight
 
-> *"The first thread of light. You wire your contract to a real frontend and bring Lace onto Preprod. For the first time your work has a face the world can glimpse — a thin, deliberate crescent. Most of it still rests in shadow; you have simply chosen to reveal the edge."*
+> *"Half light, half shadow — the truest picture of Midnight itself. Your dApp hardens into something production-grade: tests, CI/CD, a polished build. Exactly half the moon is lit, and exactly as much of your app is disclosed as you decide."*  
+> — **Midnight Level 3: First Quarter / Half Moon Challenge**
 
+[![CI/CD Pipeline](https://github.com/Soumi14mili/ShadowVote/actions/workflows/ci.yml/badge.svg)](https://github.com/Soumi14mili/ShadowVote/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel%20Production-success?style=for-the-badge&logo=vercel)](https://shadow-vote-kappa.vercel.app/)
 [![Midnight Preprod](https://img.shields.io/badge/Network-Midnight%20Preprod-cyan?style=for-the-badge&logo=shield)](https://explorer.midnight.network)
+[![Tests Passing](https://img.shields.io/badge/Tests-6%2F6%20Passing-emerald?style=for-the-badge&logo=jest)](https://github.com/Soumi14mili/ShadowVote/actions)
 [![Compact Language](https://img.shields.io/badge/Compact-v0.23.0-purple?style=for-the-badge)](https://docs.midnight.network)
 [![Lace Wallet](https://img.shields.io/badge/Wallet-Lace%20Connected-amber?style=for-the-badge)](https://www.lace.io/)
-[![Zero-Knowledge](https://img.shields.io/badge/ZK--SNARK-Proven%20Without%20Being%20Shown-emerald?style=for-the-badge)](https://docs.midnight.network)
 
 ---
 
-## 🌐 Live Demo & Deliverables
+## 🌐 Quick Links & Submission Deliverables
 
-| Item | Resource / Value |
+| Deliverable | Resource / Location |
 |---|---|
-| **Public GitHub Repo** | [https://github.com/Soumi14mili/ShadowVote](https://github.com/Soumi14mili/ShadowVote) |
-| **Live Demo Link** | [https://shadow-vote-kappa.vercel.app/](https://shadow-vote-kappa.vercel.app/) |
+| **Live Production DApp** | **[https://shadow-vote-kappa.vercel.app/](https://shadow-vote-kappa.vercel.app/)** |
+| **Public GitHub Repository** | **[https://github.com/Soumi14mili/ShadowVote](https://github.com/Soumi14mili/ShadowVote)** |
 | **Deployed Preprod Address** | `72eaeadba57dc76079ae2b8329e59243ed27b6d49dafec6f20eb97f4262d73f9` |
-| **Demo Video** | [`demo-video.webm`](./demo-video.webm) — End-to-end wallet connect + successful ZK circuit call + disconnect |
-| **Test Suite** | 6 passed, 100% circuit & wallet tests passing (`npm test`) |
-| **Commit History** | 10 structured, meaningful commits |
+| **Formal Product Proposal** | [`PRODUCT_PROPOSAL.md`](./PRODUCT_PROPOSAL.md) *(Track: Voting & Governance / Private DAO Voting)* |
+| **CI/CD Workflow** | [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) *(Automated lint, matrix tests & build)* |
+| **Passing Test Screenshot** | [`screenshots/test_output_passing.png`](./screenshots/test_output_passing.png) *(6/6 passing)* |
+| **Demo Video (1 Minute)** | [`demo-video.webm`](./demo-video.webm) *(Wallet connect + ZK circuit call + privacy inspection)* |
+| **Commit History** | 10+ granular, meaningful conventional commits |
 
 ---
 
-## 📋 Requirements to Pass — Compliance Matrix
+## 📋 Level 3 Compliance Matrix
 
-| Requirement | Implementation Status | Evidence / Location |
+| Requirement | Status | Evidence / Verification |
 |---|---|---|
-| **1. Lace wallet connect / disconnect** | ✅ **Implemented** | [`src/hooks/useLaceWallet.ts`](./src/hooks/useLaceWallet.ts), [`src/components/Header.tsx`](./src/components/Header.tsx) — Detects `window.midnight.mnLace`, calls `.enable()`, fetches Preprod address & tDUST balance; implements clean `disconnect()`; includes built-in Preprod testnet simulator for evaluators without the extension. |
-| **2. Circuit called successfully from frontend** | ✅ **Implemented** | [`src/hooks/useShadowVote.ts`](./src/hooks/useShadowVote.ts), [`src/components/VotingBooth.tsx`](./src/components/VotingBooth.tsx) — Invokes `cast_vote()`, `initialize()`, and `close_election()` circuits with `@midnight-ntwrk/compact-runtime`. |
-| **3. Observable privacy behavior** | ✅ **Implemented** | [`src/components/PrivacyInspector.tsx`](./src/components/PrivacyInspector.tsx) — Proves valid ballot participation and increments public aggregate tallies without ever disclosing the voter's identity or ballot choice. |
-| **4. Contract deployed to Preprod (verifiable)** | ✅ **Verified** | Address: `72eaeadba57dc76079ae2b8329e59243ed27b6d49dafec6f20eb97f4262d73f9` verified on Midnight Preprod testnet. |
-| **5. Minimum 8 meaningful commits** | ✅ **Completed** | 8+ granular, semantic git commits documenting the complete lifecycle. |
+| **1. Fully functional dApp with Midnight privacy model** | ✅ **Passed** | Fully interactive voting booth with client-side witness `vote_choice(): Boolean` and `@midnight-ntwrk/compact-runtime` circuit proving. |
+| **2. Minimum 3 tests passing** | ✅ **Passed (6/6)** | Complete test suite covering contract address, wallet helpers, YES/NO circuit calls, privacy decoupling, and admin constraints. |
+| **3. CI/CD pipeline running** | ✅ **Passed** | GitHub Actions workflow executing on push/PR with Node 20.x & 22.x matrix builds. |
+| **4. Approved idea from provided list** | ✅ **Passed** | Selected Track: **Voting & Governance — Private DAO Voting on Midnight**. Formal proposal in [`PRODUCT_PROPOSAL.md`](./PRODUCT_PROPOSAL.md). |
+| **5. Minimum 10 meaningful commits** | ✅ **Passed** | 10+ semantic commits following conventional commits standard. |
 
 ---
 
-## 🔐 The Observable Privacy Claim: "Proven Without Being Shown"
+## 💡 Product Proposal Summary
 
-### The Governance Privacy Dilemma
-On traditional transparent blockchains (e.g., Ethereum, Solana, standard Cardano), every governance vote leaks:
-1. Which specific address cast the ballot.
-2. The exact choice selected (`YES` or `NO`).
-3. The precise timestamp and vote weight.
+### Track: **Voting & Governance (Private DAO Voting)**
+- **The Problem**: Public blockchain governance exposes voter identities, account balances, and voting decisions. This leads to whale manipulation, voter intimidation, retaliation against grant reviewers, and enforceable vote-buying/bribery.
+- **The Solution**: **ShadowVote** decouples identity from intent. Voters prove their eligibility and ballot validity off-chain inside a zero-knowledge circuit, submitting only a succinct ZK-SNARK proof and the aggregate count change to the Midnight Preprod ledger.
+- Read the full proposal: **[`PRODUCT_PROPOSAL.md`](./PRODUCT_PROPOSAL.md)**.
 
-This creates severe vulnerabilities: voter intimidation, bribery, bandwagon effects, and retaliatory governance.
+---
 
-### How ShadowVote Solves It with Midnight
-ShadowVote establishes a strict dual-state boundary enforced mathematically by Midnight's zero-knowledge prover:
+## 🔐 Privacy Model: What an Observer Can and Cannot Learn
+
+Midnight’s dual-state architecture divides state into a **Private Witness (Off-Chain)** and **Public Ledger State (On-Chain)**. The table below delineates the strict boundary of disclosure:
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│               CLIENT-SIDE (PRIVATE REALM)              │
-│  Browser Memory / Local Compact Prover                 │
+│              PRIVATE WITNESS (CLIENT REALM)            │
+│  - Off-chain in browser memory                         │
+│  - Evaluated inside the Compact ZK Prover              │
+│  - NEVER transmitted over the wire                     │
 │                                                        │
-│  witness vote_choice(): Boolean;  <-- [SECRET BALLOT]  │
-│                                                        │
-│  ZK Circuit: asserts election is open, generates proof │
-│  that choice ∈ {true, false}, and arithmetic is valid  │
+│  witness vote_choice(): Boolean;  <-- [CONFIDENTIAL]   │
 └──────────────────────────┬─────────────────────────────┘
                            │ Succinct ZK Proof (π)
                            │ + Public Tally Delta (+1)
@@ -68,17 +72,24 @@ ShadowVote establishes a strict dual-state boundary enforced mathematically by M
 │  ledger no_votes:     Uint<32>;                        │
 │  ledger total_voters: Uint<32>;  <-- [PUBLIC TALLY +1] │
 │  ledger is_open:      Boolean;                         │
-│                                                        │
-│  WHAT THE NETWORK OBSERVES:                            │
-│  ✓ Proof verification succeeded                        │
-│  ✓ Total voters count increased by 1                   │
-│  ✗ Zero record of voter's identity                     │
-│  ✗ Zero exposure of whether choice was YES or NO       │
 └────────────────────────────────────────────────────────┘
 ```
 
+### 👁️ What an Observer CAN Learn
+1. **Total Number of Ballots Cast**: The public counter `total_voters` increments by 1 with each confirmed transaction.
+2. **Current Aggregate Tallies**: Any network observer or node validator can query `yes_votes` and `no_votes` to verify the democratic outcome.
+3. **Election Lifecycle Status**: Observers can read `is_open` (Boolean) to see whether the election is active or closed.
+4. **Transaction Metadata**: The transaction hash, block height, timestamp, and network fee (tDUST).
+5. **ZK-SNARK Proof Validity**: Validators verify that the zero-knowledge proof mathematically satisfies all Compact contract constraints.
+
+### 🚫 What an Observer CANNOT Learn
+1. **Individual Voter Choice**: The witness `vote_choice(): Boolean` never leaves the voter's local device. Observers cannot discern whether a voter voted YES or NO.
+2. **Voter-to-Ballot Association**: No observer, indexer, or validator can link a specific Lace wallet address to an individual vote choice.
+3. **Execution Branch**: The circuit branch (`if (choice)`) is executed inside the zero-knowledge prover; the public transaction only carries the post-proof state transition.
+4. **Historical Voter Choices**: The ledger maintains no mapping of `address -> choice`. Voting history cannot be mined or de-anonymized.
+
 ### The `disclose()` Operator in Compact
-In Compact, private witnesses cannot modify ledger state unless explicitly handled via `disclose()`:
+In Compact (`contracts/shadow_vote.compact`), private data cannot affect public state without the explicit `disclose()` operator:
 
 ```compact
 export circuit cast_vote(): [] {
@@ -97,124 +108,91 @@ export circuit cast_vote(): [] {
 }
 ```
 
-**The Core Privacy Guarantee**: The compiler guarantees that the voter's private witness `vote_choice()` never leaves the client. The ZK proof proves that the voter updated the tally legally without revealing which branch was taken to any network observer or validator.
+The zero-knowledge proof guarantees the mathematical correctness of the tally increment while keeping the underlying witness choice strictly concealed.
 
 ---
 
-## 📸 Visual Walkthrough & Screenshots
+## 🧪 Test Suite & Passing Output
 
-### 1. Landing View (Unconnected State & Contract Banner)
-![Landing Unconnected](./screenshots/01_landing_unconnected.png)
-*Initial view displaying the verifiable Preprod contract address and prompt to connect Lace.*
+ShadowVote includes automated integration tests running with `@midnight-ntwrk/compact-runtime`:
 
-### 2. Lace Wallet Connected on Preprod
-![Lace Wallet Connected](./screenshots/02_wallet_connected_preprod.png)
-*Lace wallet connected, showing Preprod address, tDUST balance, and live election status.*
+![Test Output Passing](./screenshots/test_output_passing.png)
 
-### 3. Ballot Selection in Voting Booth
-![Ballot Selection](./screenshots/03_ballot_choice_selected.png)
-*Selecting secret choice (`vote_choice() = true`), encrypted locally.*
+```bash
+$ npm test
+PASS tests/frontend.test.ts
+  ShadowVote Level 2 & 3: Crescent & First Quarter Integration
+    ✓ verifies the on-chain Preprod contract address format and validity (4 ms)
+    ✓ generates valid Preprod transaction hashes and wallet address helpers (1 ms)
+    ✓ successfully invokes cast_vote() circuit with private witness = true (112 ms)
+    ✓ successfully invokes cast_vote() circuit with private witness = false (46 ms)
+    ✓ observes privacy behavior: tallies increment without leaking individual witness (89 ms)
+    ✓ closes election and enforces ZK constraint rejection for any late votes (53 ms)
 
-### 4. Zero-Knowledge Circuit Execution Pipeline
-![ZK Circuit Proving](./screenshots/04_circuit_execution_proving.png)
-*4-stage pipeline: Witness Binding → ZK-SNARK Prover → Lace Authorization → Preprod Submission.*
-
-### 5. Circuit Call Confirmed & Ledger Updated
-![Circuit Confirmed](./screenshots/05_circuit_confirmed_tally_updated.png)
-*Transaction confirmed on Preprod with celebration and updated aggregate tallies.*
-
-### 6. Observable Privacy Inspector ("Proven Without Being Shown")
-![Observable Privacy Inspector](./screenshots/06_privacy_inspector_proven_not_shown.png)
-*Side-by-side inspection: Client Private Witness (0 bytes leaked) vs Preprod Public Ledger State.*
-
-### 7. Verified On-Chain Transactions Log
-![On-Chain Transactions](./screenshots/07_on_chain_transactions.png)
-*Immutable transaction history with verified ZK-SNARK hashes and privacy badges.*
-
-### 8. Lace Wallet Disconnected
-![Wallet Disconnected](./screenshots/08_wallet_disconnected.png)
-*Clean disconnect flow, resetting session and state.*
+Test Suites: 1 passed, 1 total
+Tests:       6 passed, 6 total
+Snapshots:   0 total
+Time:        1.738 s
+```
 
 ---
 
-## 🎬 Demo Video
+## 🔄 CI/CD Pipeline (`.github/workflows/ci.yml`)
 
-The repository includes a video demonstration [`demo-video.webm`](./demo-video.webm) recorded with headless Chrome on Midnight Preprod, showcasing:
-1. Loading the ShadowVote application and reviewing the deployed contract address.
-2. Connecting the Lace wallet on Preprod.
-3. Selecting a private ballot choice in the voting booth.
-4. Invoking the `cast_vote()` ZK circuit through the 4-phase execution pipeline.
-5. Verifying the public ledger counters update while the individual choice remains concealed.
-6. Inspecting the Observable Privacy Inspector panel.
-7. Disconnecting the Lace wallet cleanly.
+The repository includes a production-grade GitHub Actions CI/CD workflow:
+- **Triggers**: On every push and pull request to `main`, `level-2`, and `level-3`.
+- **Matrix**: Node.js `20.x` and `22.x`.
+- **Steps**:
+  1. `npm ci` — Clean dependency installation
+  2. `npm test` — Automated test suite with Compact runtime
+  3. `npm run build` — TypeScript compilation & Vite production build
 
 ---
 
-## 🛠️ Architecture & Tech Stack
+## 🎬 1-Minute Demonstration Video
 
-- **Smart Contract Language**: Compact `v0.23.0` (`compactc 0.31.1`)
-- **Zero-Knowledge Runtime**: `@midnight-ntwrk/compact-runtime` `^0.16.0`, `@midnight-ntwrk/onchain-runtime-v3`
-- **Wallet Integration**: Midnight Lace Wallet DApp Connector (`window.midnight.mnLace`)
-- **Network**: Midnight Preprod Testnet
-- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, Lucide React, Canvas Confetti
-- **Testing**: Jest with ESM VM modules and ts-jest
+The video demonstration [`demo-video.webm`](./demo-video.webm) (2.4 MB) was recorded on Midnight Preprod and showcases:
+1. **Lace Wallet Connect**: Seamless connection to Midnight Lace with address and tDUST balance display.
+2. **Private Ballot Selection**: Selecting a ballot choice kept exclusively in browser memory.
+3. **ZK Circuit Execution**: Invoking `cast_vote()` with the 4-phase pipeline (Witness Binding → ZK-SNARK Prover → Lace Authorization → Preprod Submission).
+4. **Observable Privacy Inspector**: Side-by-side verification proving that the tally incremented while the ballot remained confidential.
+5. **Wallet Disconnect**: Clean disconnection and session reset.
+
+---
+
+## 📸 Application Screenshots
+
+| Feature | Screenshot |
+|---|---|
+| **1. Landing & Deployed Address** | ![Landing](./screenshots/01_landing_unconnected.png) |
+| **2. Lace Wallet Connected** | ![Connected](./screenshots/02_wallet_connected_preprod.png) |
+| **3. Ballot Selection** | ![Ballot](./screenshots/03_ballot_choice_selected.png) |
+| **4. Circuit Proving** | ![Proving](./screenshots/04_circuit_execution_proving.png) |
+| **5. Confirmation & Ledger Update** | ![Confirmed](./screenshots/05_circuit_confirmed_tally_updated.png) |
+| **6. Observable Privacy Inspector** | ![Privacy](./screenshots/06_privacy_inspector_proven_not_shown.png) |
+| **7. On-Chain Transactions** | ![Transactions](./screenshots/07_on_chain_transactions.png) |
+| **8. Lace Disconnect** | ![Disconnect](./screenshots/08_wallet_disconnected.png) |
 
 ---
 
 ## 🚀 Running Locally
 
-### 1. Clone the Repository
 ```bash
-git clone https://github.com/Soumi14mili/ShadowVote-UI.git
-cd ShadowVote-UI
-```
+# 1. Clone repository
+git clone https://github.com/Soumi14mili/ShadowVote.git
+cd ShadowVote
 
-### 2. Install Dependencies
-```bash
+# 2. Install dependencies
 npm install
-```
 
-### 3. Run the Automated Test Suite
-```bash
+# 3. Run automated tests
 npm test
-```
-All 6 tests will execute and pass:
-```
-PASS tests/frontend.test.ts
-  ShadowVote Level 2: Crescent Frontend & Preprod Integration
-    ✓ verifies the on-chain Preprod contract address format and validity (2 ms)
-    ✓ generates valid Preprod transaction hashes and wallet address helpers (2 ms)
-    ✓ successfully invokes cast_vote() circuit with private witness = true (108 ms)
-    ✓ successfully invokes cast_vote() circuit with private witness = false (48 ms)
-    ✓ observes privacy behavior: tallies increment without leaking individual witness (50 ms)
-    ✓ closes election and enforces ZK constraint rejection for any late votes (33 ms)
-```
 
-### 4. Build for Production
-```bash
+# 4. Build for production
 npm run build
-```
 
-### 5. Start the Local Development Server
-```bash
+# 5. Start local dev server
 npm run dev
-```
-Open `http://localhost:3000` in your browser.
-
----
-
-## 📜 Meaningful Commit Log (8+ Commits)
-
-```
-* commit 8: docs: complete Level 2 README with privacy claim, screenshots, and demo video
-* commit 7: build: configure Vercel and Netlify deployment configs and demo video pipeline
-* commit 6: test: add automated test suite for wallet connection and circuit execution
-* commit 5: feat(ui): implement Crescent theme voting booth, ledger dashboard, and activity log
-* commit 4: feat(privacy): implement observable privacy inspector for ZK proofs
-* commit 3: feat(circuits): wire contract circuits and ledger state to frontend client
-* commit 2: feat(wallet): implement Midnight Lace wallet connect and disconnect hook
-* commit 1: feat(contract): import ShadowVote Compact contract and compiled ZK artifacts
-* commit 0: chore: initialize Level 2 project with Vite, React, TypeScript, and TailwindCSS
 ```
 
 ---
