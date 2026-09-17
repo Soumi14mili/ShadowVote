@@ -2,21 +2,31 @@ import React, { useState } from 'react';
 import { Header } from './components/Header';
 import { ContractBanner } from './components/ContractBanner';
 import { ElectionStats } from './components/ElectionStats';
+import { ProposalSelector } from './components/ProposalSelector';
 import { VotingBooth } from './components/VotingBooth';
+import { CircuitVisualizer } from './components/CircuitVisualizer';
+import { ProofVerifier } from './components/ProofVerifier';
 import { PrivacyInspector } from './components/PrivacyInspector';
 import { TransactionHistory } from './components/TransactionHistory';
 import { AdminControls } from './components/AdminControls';
+import { CosmicBackground } from './components/CosmicBackground';
 import { useLaceWallet } from './hooks/useLaceWallet';
 import { useShadowVote } from './hooks/useShadowVote';
-import { Moon, Shield, Sparkles, Terminal, BookOpen, Github, ExternalLink } from 'lucide-react';
+import { Moon, Shield, Sparkles, BookOpen, Github, Cpu, FileCheck, Terminal, History, Settings, ExternalLink } from 'lucide-react';
+import { soundFx } from './utils/audio';
 
 export const App: React.FC = () => {
   const { wallet, isLaceAvailable, connect, disconnect } = useLaceWallet();
   const {
+    proposals,
+    selectedProposalId,
+    activeProposal,
+    selectProposal,
     ledgerState,
     circuitStep,
     activeCircuit,
     recentTx,
+    recentReceipt,
     transactions,
     privacySnapshot,
     castVote,
@@ -24,16 +34,24 @@ export const App: React.FC = () => {
     closeElection,
   } = useShadowVote();
 
-  const [activeTab, setActiveTab] = useState<'voting' | 'privacy' | 'transactions' | 'admin'>('voting');
+  const [activeTab, setActiveTab] = useState<'governance' | 'prover' | 'receipt' | 'privacy' | 'transactions' | 'admin'>('governance');
+
+  const handleTabClick = (tab: typeof activeTab) => {
+    soundFx.playClick();
+    setActiveTab(tab);
+  };
+
+  const handleClaimFaucet = () => {
+    if (wallet.address) {
+      // Simulate adding 500 tDUST
+      wallet.balance = `${(parseFloat(wallet.balance.replace(/[^0-9.]/g, '')) + 500).toLocaleString('en-US', { minimumFractionDigits: 2 })} tDUST`;
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-midnight-950 text-slate-100 flex flex-col relative overflow-x-hidden">
-      {/* Background Starfield and Ambient Crescent Glow */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] bg-cyan-500/5 rounded-full blur-[130px]" />
-        <div className="absolute bottom-10 right-10 w-[450px] h-[450px] bg-amber-500/5 rounded-full blur-[120px]" />
-        <div className="absolute top-20 left-10 w-[300px] h-[300px] bg-purple-500/5 rounded-full blur-[100px]" />
-      </div>
+    <div className="min-h-screen bg-midnight-950 text-slate-100 flex flex-col relative overflow-x-hidden selection:bg-cyan-500/30 selection:text-cyan-200">
+      {/* Interactive Cosmic Background Canvas */}
+      <CosmicBackground />
 
       {/* Header */}
       <Header
@@ -41,21 +59,22 @@ export const App: React.FC = () => {
         isLaceAvailable={isLaceAvailable}
         onConnect={connect}
         onDisconnect={disconnect}
+        onClaimFaucet={handleClaimFaucet}
       />
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10 space-y-6">
-        {/* Poetic Intro & Crescent Motto */}
+        {/* Poetic Intro & Midnight Branding */}
         <div className="text-center max-w-3xl mx-auto space-y-2 mb-6">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-midnight-850/80 border border-cyan-500/30 text-xs text-cyan-300 font-mono mb-2 shadow-sm">
+          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-midnight-900/90 border border-cyan-500/30 text-xs text-cyan-300 font-mono shadow-crescent">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Midnight Challenge Level 2 · Crescent</span>
+            <span>Midnight Challenge Level 3 · First Quarter</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-100 via-cyan-100 to-amber-200">
-            The First Thread of Light
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-100 via-cyan-100 to-amber-200">
+            The Shielded Governance Frontier
           </h1>
           <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
-            "You wire your contract to a real frontend and bring Lace onto Preprod. Most of it still rests in shadow; you have simply chosen to reveal the edge."
+            "Half light, half shadow — exactly half the moon is lit, and exactly as much of your governance participation is disclosed as you decide."
           </p>
         </div>
 
@@ -65,79 +84,145 @@ export const App: React.FC = () => {
         {/* Live Public Ledger Counters */}
         <ElectionStats ledgerState={ledgerState} />
 
-        {/* Navigation Tabs */}
-        <div className="flex items-center justify-center sm:justify-start space-x-2 border-b border-midnight-800 pb-2">
+        {/* Futuristic Navigation Tabs */}
+        <div className="flex items-center space-x-2 overflow-x-auto pb-2 border-b border-midnight-800 scrollbar-none">
           <button
-            onClick={() => setActiveTab('voting')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-              activeTab === 'voting'
-                ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-850'
+            onClick={() => handleTabClick('governance')}
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center space-x-2 ${
+              activeTab === 'governance'
+                ? 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-cyan-300 border border-cyan-500/50 shadow-crescent'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-900'
             }`}
           >
-            Voting Booth
+            <Moon className="w-4 h-4 text-cyan-400" />
+            <span>Governance Proposals</span>
           </button>
+
           <button
-            onClick={() => setActiveTab('privacy')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 ${
+            onClick={() => handleTabClick('prover')}
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center space-x-2 ${
+              activeTab === 'prover'
+                ? 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-cyan-300 border border-cyan-500/50 shadow-crescent'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-900'
+            }`}
+          >
+            <Cpu className="w-4 h-4 text-purple-400" />
+            <span>ZK Prover Console</span>
+            {circuitStep !== 'idle' && (
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+            )}
+          </button>
+
+          <button
+            onClick={() => handleTabClick('receipt')}
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center space-x-2 ${
+              activeTab === 'receipt'
+                ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-emerald-300 border border-emerald-500/50 shadow-crescent'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-900'
+            }`}
+          >
+            <FileCheck className="w-4 h-4 text-emerald-400" />
+            <span>Proof Verifier & Receipt</span>
+          </button>
+
+          <button
+            onClick={() => handleTabClick('privacy')}
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center space-x-2 ${
               activeTab === 'privacy'
-                ? 'bg-amber-500/10 text-amber-300 border border-amber-500/30 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-850'
+                ? 'bg-gradient-to-r from-amber-500/20 to-rose-500/20 text-amber-300 border border-amber-500/50 shadow-crescent'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-900'
             }`}
           >
-            <Shield className="w-3.5 h-3.5 text-amber-400" />
-            <span>Privacy Inspector (ZK Claim)</span>
+            <Shield className="w-4 h-4 text-amber-400" />
+            <span>Privacy Audit & Attack Sim</span>
           </button>
+
           <button
-            onClick={() => setActiveTab('transactions')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+            onClick={() => handleTabClick('transactions')}
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center space-x-2 ${
               activeTab === 'transactions'
-                ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-850'
+                ? 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-cyan-300 border border-cyan-500/50 shadow-crescent'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-900'
             }`}
           >
-            On-Chain Transactions ({transactions.length})
+            <History className="w-4 h-4 text-cyan-400" />
+            <span>Transactions ({transactions.length})</span>
           </button>
+
           <button
-            onClick={() => setActiveTab('admin')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+            onClick={() => handleTabClick('admin')}
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center space-x-2 ${
               activeTab === 'admin'
-                ? 'bg-purple-500/10 text-purple-300 border border-purple-500/30 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-850'
+                ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border border-purple-500/50 shadow-crescent'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-900'
             }`}
           >
-            Admin Lifecycle
+            <Settings className="w-4 h-4 text-purple-400" />
+            <span>Admin</span>
           </button>
         </div>
 
-        {/* Tab Panels */}
-        {activeTab === 'voting' && (
+        {/* TAB 1: GOVERNANCE & VOTING */}
+        {activeTab === 'governance' && (
           <div className="space-y-6">
+            <ProposalSelector
+              proposals={proposals}
+              selectedProposalId={selectedProposalId}
+              onSelectProposal={selectProposal}
+            />
+
             <VotingBooth
               wallet={wallet}
-              isOpen={ledgerState.is_open}
+              activeProposal={activeProposal}
               circuitStep={circuitStep}
               activeCircuit={activeCircuit}
               onCastVote={castVote}
               onConnectWallet={() => connect('lace')}
+              onViewReceipt={() => handleTabClick('receipt')}
             />
-            {/* Quick Privacy Snapshot below voting booth */}
-            <PrivacyInspector snapshot={privacySnapshot} />
+
+            {/* In-Line Circuit Prover Snapshot */}
+            <CircuitVisualizer
+              circuitStep={circuitStep}
+              activeCircuit={activeCircuit}
+              selectedChoice={privacySnapshot.clientWitnessChoice}
+            />
           </div>
         )}
 
+        {/* TAB 2: ZK PROVER CONSOLE */}
+        {activeTab === 'prover' && (
+          <div className="space-y-6">
+            <CircuitVisualizer
+              circuitStep={circuitStep}
+              activeCircuit={activeCircuit}
+              selectedChoice={privacySnapshot.clientWitnessChoice}
+            />
+          </div>
+        )}
+
+        {/* TAB 3: PROOF VERIFIER & RECEIPT */}
+        {activeTab === 'receipt' && (
+          <div className="space-y-6">
+            <ProofVerifier recentReceipt={recentReceipt} />
+          </div>
+        )}
+
+        {/* TAB 4: PRIVACY INSPECTOR & ADVERSARY SIMULATOR */}
         {activeTab === 'privacy' && (
           <div className="space-y-6">
             <PrivacyInspector snapshot={privacySnapshot} />
           </div>
         )}
 
+        {/* TAB 5: ON-CHAIN TRANSACTIONS */}
         {activeTab === 'transactions' && (
           <div className="space-y-6">
             <TransactionHistory transactions={transactions} />
           </div>
         )}
 
+        {/* TAB 6: ADMIN LIFECYCLE */}
         {activeTab === 'admin' && (
           <div className="space-y-6">
             <AdminControls
@@ -152,12 +237,12 @@ export const App: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-midnight-800/80 bg-midnight-950 py-8 relative z-10 mt-12">
+      <footer className="border-t border-midnight-800/80 bg-midnight-950/90 backdrop-blur-md py-8 relative z-10 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-3">
             <Moon className="w-5 h-5 text-cyan-400" />
             <span className="text-xs font-mono text-slate-400">
-              ShadowVote · Midnight Level 2 Crescent Challenge
+              ShadowVote · Production Shielded Governance on Midnight Preprod
             </span>
           </div>
 
@@ -181,13 +266,13 @@ export const App: React.FC = () => {
               <span>Midnight Docs</span>
             </a>
             <a
-              href="https://chromewebstore.google.com/detail/lace-midnight/detail"
+              href="https://explorer.midnight.network"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-amber-300 transition-colors flex items-center space-x-1"
             >
               <ExternalLink className="w-3.5 h-3.5" />
-              <span>Lace Extension</span>
+              <span>Preprod Explorer</span>
             </a>
           </div>
         </div>

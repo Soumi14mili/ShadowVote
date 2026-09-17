@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { Moon, Wallet, LogOut, ExternalLink, ShieldCheck, ChevronDown, Sparkles } from 'lucide-react';
+import { Moon, Wallet, LogOut, ShieldCheck, ChevronDown, Sparkles, Volume2, VolumeX, Droplets, Activity } from 'lucide-react';
 import type { LaceWalletState } from '../types/midnight';
 import { shortenAddress } from '../utils/formatters';
+import { soundFx } from '../utils/audio';
 
 interface HeaderProps {
   wallet: LaceWalletState;
   isLaceAvailable: boolean;
   onConnect: (type?: 'lace' | 'simulator') => void;
   onDisconnect: () => void;
+  onClaimFaucet: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -15,8 +17,23 @@ export const Header: React.FC<HeaderProps> = ({
   isLaceAvailable,
   onConnect,
   onDisconnect,
+  onClaimFaucet,
 }) => {
   const [showWalletMenu, setShowWalletMenu] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(soundFx.isSoundEnabled());
+  const [faucetClaimed, setFaucetClaimed] = useState(false);
+
+  const handleToggleSound = () => {
+    const next = soundFx.toggleSound();
+    setSoundEnabled(next);
+  };
+
+  const handleFaucet = () => {
+    soundFx.playSuccess();
+    onClaimFaucet();
+    setFaucetClaimed(true);
+    setTimeout(() => setFaucetClaimed(false), 2500);
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-midnight-700/60 bg-midnight-950/80 backdrop-blur-md">
@@ -33,33 +50,59 @@ export const Header: React.FC<HeaderProps> = ({
                 ShadowVote
               </span>
               <span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 tracking-wider">
-                Crescent · Level 2
+                Crescent · Production
               </span>
             </div>
             <p className="text-xs text-slate-400 font-mono flex items-center gap-1.5 mt-0.5">
-              <span>The first thread of light</span>
+              <span>Zero-Knowledge DAO Governance</span>
               <span className="text-slate-600">·</span>
               <span className="text-cyan-400">Midnight Preprod</span>
             </p>
           </div>
         </div>
 
-        {/* Right: Network Badge & Lace Wallet */}
+        {/* Right: Controls, Network, Sound & Lace Wallet */}
         <div className="flex items-center space-x-3">
-          {/* Preprod Network Pill */}
-          <div className="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-midnight-850 border border-midnight-700/80 text-xs font-mono text-slate-300">
+          {/* Sound FX Toggle Button */}
+          <button
+            onClick={handleToggleSound}
+            title={soundEnabled ? 'Mute Sound FX' : 'Enable Sound FX'}
+            className="p-2 rounded-xl bg-midnight-900 hover:bg-midnight-850 border border-midnight-700 text-slate-400 hover:text-cyan-300 transition-colors"
+          >
+            {soundEnabled ? <Volume2 className="w-4 h-4 text-cyan-400" /> : <VolumeX className="w-4 h-4" />}
+          </button>
+
+          {/* Preprod Network Pill with Latency */}
+          <div className="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-midnight-900 border border-midnight-700/80 text-xs font-mono text-slate-300">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
             <span>Preprod Testnet</span>
+            <span className="text-slate-500 text-[10px]">18ms</span>
           </div>
+
+          {/* Faucet Claim Button */}
+          {wallet.isConnected && (
+            <button
+              onClick={handleFaucet}
+              disabled={faucetClaimed}
+              title="Request +500 tDUST from Midnight Testnet Faucet"
+              className="hidden md:inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-300 text-xs font-mono transition-all"
+            >
+              <Droplets className="w-3.5 h-3.5 text-purple-400" />
+              <span>{faucetClaimed ? '+500 tDUST Claimed!' : 'Faucet (+500)'}</span>
+            </button>
+          )}
 
           {/* Lace Connect / Disconnect */}
           {wallet.isConnected ? (
             <div className="relative">
               <button
-                onClick={() => setShowWalletMenu(!showWalletMenu)}
+                onClick={() => {
+                  soundFx.playClick();
+                  setShowWalletMenu(!showWalletMenu);
+                }}
                 className="flex items-center space-x-2.5 px-3.5 py-2 rounded-xl bg-midnight-850 hover:bg-midnight-800 border border-cyan-500/40 hover:border-cyan-400/80 transition-all text-sm font-medium shadow-sm group"
               >
                 <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#06b6d4]" />
@@ -74,7 +117,7 @@ export const Header: React.FC<HeaderProps> = ({
 
               {/* Wallet Dropdown Menu */}
               {showWalletMenu && (
-                <div className="absolute right-0 mt-2 w-72 rounded-xl bg-midnight-900 border border-midnight-700 shadow-2xl p-4 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="absolute right-0 mt-2 w-72 rounded-2xl bg-midnight-900 border border-midnight-700 shadow-2xl p-4 z-50 animate-in fade-in zoom-in-95 duration-150">
                   <div className="flex items-center justify-between pb-3 border-b border-midnight-800">
                     <div className="flex items-center space-x-2">
                       <ShieldCheck className="w-4 h-4 text-cyan-400" />
@@ -87,24 +130,32 @@ export const Header: React.FC<HeaderProps> = ({
                     </span>
                   </div>
 
-                  <div className="py-3 space-y-2">
+                  <div className="py-3 space-y-2.5">
                     <div>
                       <span className="text-[11px] text-slate-400 block font-mono">Account Address</span>
-                      <span className="text-xs font-mono text-slate-200 break-all bg-midnight-950/80 p-1.5 rounded block border border-midnight-800 mt-1">
+                      <span className="text-xs font-mono text-slate-200 break-all bg-midnight-950/80 p-2 rounded-lg block border border-midnight-800 mt-1 select-all">
                         {wallet.address}
                       </span>
                     </div>
-                    <div>
-                      <span className="text-[11px] text-slate-400 block font-mono">Available Balance</span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] text-slate-400 font-mono">Available Balance</span>
                       <span className="text-sm font-semibold text-cyan-300 font-mono">
                         {wallet.balance}
                       </span>
                     </div>
                   </div>
 
-                  <div className="pt-2 border-t border-midnight-800 flex items-center justify-between">
+                  <div className="pt-3 border-t border-midnight-800 space-y-2">
+                    <button
+                      onClick={handleFaucet}
+                      className="w-full flex items-center justify-center space-x-2 px-3 py-2 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-semibold transition-colors"
+                    >
+                      <Droplets className="w-3.5 h-3.5" />
+                      <span>Claim Testnet tDUST</span>
+                    </button>
                     <button
                       onClick={() => {
+                        soundFx.playClick();
                         setShowWalletMenu(false);
                         onDisconnect();
                       }}
@@ -120,7 +171,10 @@ export const Header: React.FC<HeaderProps> = ({
           ) : (
             <div className="flex items-center space-x-2">
               <button
-                onClick={() => onConnect('lace')}
+                onClick={() => {
+                  soundFx.playClick();
+                  onConnect('lace');
+                }}
                 disabled={wallet.isConnecting}
                 className="relative inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 via-cyan-500 to-amber-500 hover:from-cyan-500 hover:to-amber-400 text-midnight-950 font-semibold text-sm transition-all shadow-crescent hover:shadow-crescent-glow disabled:opacity-50"
               >
@@ -130,7 +184,10 @@ export const Header: React.FC<HeaderProps> = ({
 
               {!isLaceAvailable && (
                 <button
-                  onClick={() => onConnect('simulator')}
+                  onClick={() => {
+                    soundFx.playClick();
+                    onConnect('simulator');
+                  }}
                   title="Connect Preprod Testnet Simulator (No extension required)"
                   className="hidden sm:inline-flex items-center space-x-1 px-3 py-2 rounded-xl bg-midnight-850 hover:bg-midnight-800 border border-midnight-700 text-xs text-slate-300 font-mono transition-colors"
                 >
