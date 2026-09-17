@@ -107,8 +107,8 @@ compact --version
 ### 2. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/shadow-vote.git
-cd shadow-vote
+git clone https://github.com/Soumi14mili/ShadowVote.git
+cd ShadowVote
 ```
 
 ### 3. Install Dependencies
