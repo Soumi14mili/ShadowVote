@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import type {
   ContractLedgerState,
   CircuitCallStep,
@@ -10,6 +10,8 @@ import type {
 import {
   generatePreprodTxHash,
   generateProofDigest,
+  validateContractAddress,
+  type AddressValidationResult,
 } from '../utils/formatters';
 
 // Deployed Preprod Contract Address from Level 1 deployment
@@ -84,8 +86,30 @@ export const INITIAL_PROPOSALS: GovernanceProposal[] = [
 ];
 
 export function useShadowVote() {
+  const [contractAddress, setContractAddressState] = useState<string>(PREPROD_CONTRACT_ADDRESS);
   const [proposals, setProposals] = useState<GovernanceProposal[]>(INITIAL_PROPOSALS);
   const [selectedProposalId, setSelectedProposalId] = useState<string>('mip-01');
+
+  const addressValidation = useMemo<AddressValidationResult>(
+    () => validateContractAddress(contractAddress),
+    [contractAddress]
+  );
+
+  const updateContractAddress = useCallback((newAddr: string) => {
+    setContractAddressState(newAddr);
+    setLedgerState((prev) => ({
+      ...prev,
+      contractAddress: newAddr,
+    }));
+  }, []);
+
+  const resetContractAddress = useCallback(() => {
+    setContractAddressState(PREPROD_CONTRACT_ADDRESS);
+    setLedgerState((prev) => ({
+      ...prev,
+      contractAddress: PREPROD_CONTRACT_ADDRESS,
+    }));
+  }, []);
 
   // Active Proposal
   const activeProposal = proposals.find((p) => p.id === selectedProposalId) || proposals[0];
@@ -402,6 +426,10 @@ export function useShadowVote() {
   }, [proposals.length]);
 
   return {
+    contractAddress,
+    updateContractAddress,
+    resetContractAddress,
+    addressValidation,
     proposals,
     selectedProposalId,
     activeProposal,

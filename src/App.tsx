@@ -37,6 +37,9 @@ import { soundFx } from './utils/audio';
 export const App: React.FC = () => {
   const { wallet, isLaceAvailable, connect, disconnect } = useLaceWallet();
   const {
+    contractAddress,
+    updateContractAddress,
+    resetContractAddress,
     proposals,
     selectedProposalId,
     activeProposal,
@@ -119,7 +122,11 @@ export const App: React.FC = () => {
         <NetworkRadar />
 
         {/* Verifiable Preprod Contract Address Banner */}
-        <ContractBanner />
+        <ContractBanner
+          contractAddress={contractAddress}
+          onUpdateContractAddress={updateContractAddress}
+          onResetContractAddress={resetContractAddress}
+        />
 
         {/* Live Public Ledger Counters */}
         <ElectionStats ledgerState={ledgerState} />

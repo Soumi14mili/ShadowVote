@@ -26,7 +26,7 @@ import {
   type Witnesses,
 } from '../managed/contract/index.js';
 
-import { shortenAddress, generatePreprodTxHash } from '../src/utils/formatters';
+import { shortenAddress, generatePreprodTxHash, validateContractAddress } from '../src/utils/formatters';
 import { PREPROD_CONTRACT_ADDRESS } from '../src/hooks/useShadowVote';
 
 // Test setup fixtures
@@ -61,6 +61,34 @@ describe('ShadowVote Level 2: Crescent Frontend & Preprod Integration', () => {
     );
     expect(PREPROD_CONTRACT_ADDRESS).toHaveLength(64);
     expect(shortenAddress(PREPROD_CONTRACT_ADDRESS, 6)).toBe('72eaea...2d73f9');
+  });
+
+  it('validates and normalizes Midnight contract addresses across supported formats', () => {
+    // 64-char hex
+    const v1 = validateContractAddress('72eaeadba57dc76079ae2b8329e59243ed27b6d49dafec6f20eb97f4262d73f9');
+    expect(v1.isValid).toBe(true);
+    expect(v1.format).toBe('hex64');
+
+    // 0x-prefixed 64-char hex
+    const v2 = validateContractAddress('0x72eaeadba57dc76079ae2b8329e59243ed27b6d49dafec6f20eb97f4262d73f9');
+    expect(v2.isValid).toBe(true);
+    expect(v2.format).toBe('hex0x');
+
+    // 0200-tagged contract address
+    const v3 = validateContractAddress('020072eaeadba57dc76079ae2b8329e59243ed27b6d49dafec6f20eb97f4262d73f9');
+    expect(v3.isValid).toBe(true);
+    expect(v3.format).toBe('tagged0200');
+
+    // Bech32 format
+    const v4 = validateContractAddress('midnight1qq9x3a7e5k92b0c4d8e7f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5');
+    expect(v4.isValid).toBe(true);
+    expect(v4.format).toBe('bech32');
+
+    // Invalid address
+    const v5 = validateContractAddress('invalid_address_123');
+    expect(v5.isValid).toBe(false);
+    expect(v5.format).toBe('invalid');
+    expect(v5.errorMessage).toBeDefined();
   });
 
   // Test 2: Lace Wallet Connect / Disconnect Formatting
