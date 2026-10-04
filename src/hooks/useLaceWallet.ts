@@ -3,6 +3,15 @@ import type { LaceWalletState, WalletType } from '../types/midnight';
 
 const PREPROD_FALLBACK_ADDRESS = 'addr_preprod1qz6yv37q8w9l4fk2jx7v0c8s5um9d3e1k7p2g4h6n8m0tq9w5z';
 
+// Find an injected DApp Connector v4 wallet, preferring Lace (mnLace), then any other (e.g. 1AM)
+const getV4Wallet = (): any => {
+  const midnight = window.midnight;
+  if (!midnight) return undefined;
+  const isV4 = (w: any) =>
+    !!w && typeof w.connect === 'function' && typeof w.apiVersion === 'string' && w.apiVersion.startsWith('4');
+  return isV4(midnight.mnLace) ? midnight.mnLace : Object.values(midnight).find(isV4);
+};
+
 export function useLaceWallet() {
   const [wallet, setWallet] = useState<LaceWalletState>({
     isConnected: false,
@@ -19,7 +28,7 @@ export function useLaceWallet() {
   // Detect Lace extension availability on mount
   useEffect(() => {
     const checkLace = () => {
-      const available = Boolean(window.midnight?.mnLace);
+      const available = Boolean(window.midnight?.mnLace || getV4Wallet());
       setIsLaceAvailable(available);
     };
 
@@ -42,7 +51,30 @@ export function useLaceWallet() {
     setWallet((prev) => ({ ...prev, isConnecting: true, error: null }));
 
     try {
-      // 1. Try real Lace Wallet Extension if present and not explicitly requesting simulator
+      // 1. Try a DApp Connector v4 wallet (Lace, 1AM, ...) via connect(networkId)
+      const v4Wallet = getV4Wallet();
+      if (v4Wallet && preferredType !== 'simulator') {
+        console.log(`[Lace] Initializing connection to ${v4Wallet.name || 'Midnight wallet'} on Preprod...`);
+
+        const walletApi = await v4Wallet.connect('preprod');
+        const { unshieldedAddress } = await walletApi.getUnshieldedAddress();
+        const address = unshieldedAddress || PREPROD_FALLBACK_ADDRESS;
+
+        setWallet({
+          isConnected: true,
+          isConnecting: false,
+          address,
+          network: 'preprod',
+          balance: '1,500.00 tDUST',
+          walletType: 'lace',
+          error: null,
+        });
+
+        console.log('[Lace] Successfully connected to Midnight wallet:', address);
+        return;
+      }
+
+      // 2. Try legacy Lace Wallet Extension if present and not explicitly requesting simulator
       if (window.midnight?.mnLace && preferredType !== 'simulator') {
         const mnLace = window.midnight.mnLace;
         console.log('[Lace] Initializing connection to Midnight Lace extension on Preprod...');
@@ -74,7 +106,7 @@ export function useLaceWallet() {
         return;
       }
 
-      // 2. Fallback / Simulator mode (for browsers without Lace extension or demo previews)
+      // 3. Fallback / Simulator mode (for browsers without Lace extension or demo previews)
       console.log('[Lace Simulator] Connecting Preprod demo wallet...');
       // Brief simulated handshake delay for realistic UI feedback
       await new Promise((r) => setTimeout(r, 600));
